@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Api.Entities.Configurations
 {
-    public class MoviAcorConfiguration : IEntityTypeConfiguration<MovieActor>
+    public class MoviActorConfiguration : IEntityTypeConfiguration<MovieActor>
     {
         public void Configure(EntityTypeBuilder<MovieActor> builder)
         {

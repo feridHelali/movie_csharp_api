@@ -5,6 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Api.Data;
 using Api.DTOs;
+using Api.DTOs.MappingExtentions;
 using Api.Entities;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -30,51 +31,19 @@ namespace Api.Controllers
         {
 
 
-            Movie movie = new Movie()
-            {
-                Title = movieCreationDTO.Title,
-                InTheater = movieCreationDTO.InTheater,
-                ReleaseDate = movieCreationDTO.ReleaseDate,
-                Genres = movieCreationDTO.Genres.Select(id => new Genre() { Identifier = id }).ToHashSet<Genre>(),
-                MovieActor = movieCreationDTO.MovieActors
-                    .Select(
-                        ma => new MovieActor()
-                        {   
-                            ActorId = ma.ActorId,
-                            Character = ma.Character
-                        }).ToList<MovieActor>(),
-            };
-
-
-
-            if (movie.Genres is not null)
+            var movie = movieCreationDTO.MapToEntity();
+            
+            if(movie.Genres is not null)
             {
                 foreach (var genre in movie.Genres)
                 {
-                    _context.Entry(genre).State = EntityState.Unchanged;
+                    _context.Entry<Genre>(genre).State = EntityState.Unchanged;
                 }
             }
-
-            if (movie.MovieActor is not null)
-            {
-                for (int i = 0; i < movie.MovieActor.Count; i++)
-                {
-                    movie.MovieActor[i].Order = i + 1;
-                }
-
-                foreach (var actor in movie.MovieActor)
-                {
-                    _context.Entry(actor).State = EntityState.Unchanged;
-                }
-
-                foreach (var movieActor in movie.MovieActor)
-                {
-                    movieActor.MovieId = movie.Id;
-                }
-            }
-
+            
 
             await _context.AddAsync(movie);
+            
             await _context.SaveChangesAsync();
 
             return Ok();
