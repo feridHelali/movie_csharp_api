@@ -19,43 +19,74 @@ namespace Api.Controllers
         private readonly ILogger<ActorsController> _logger;
         private readonly ApplicationDbContext _context;
 
-        public ActorsController(ILogger<ActorsController> logger,ApplicationDbContext context)
+        public ActorsController(ILogger<ActorsController> logger, ApplicationDbContext context)
         {
             _logger = logger;
-            _context =context;
+            _context = context;
+        }
+
+
+
+        [HttpGet]
+        [Route("{name}")]
+        public async Task<ActionResult<Actor>> GetByName(string name)
+        {
+            var actor = await _context.Actors.Where(ac => ac.Name == name).FirstOrDefaultAsync();
+            if (actor is null)
+            {
+                return NotFound();
+            }
+            return Ok(actor);
         }
 
         [HttpGet]
+        [Route("{name}/v2")]
+        public async Task<ActionResult<IEnumerable<Actor>>> GetByNamePortion(string name)
+        {
+            var actors = await _context.Actors
+                .Where(ac => ac.Name.Contains(name))
+                .OrderBy(ac => ac.Name)
+                 .ThenBy(ac => ac.DateOfBirth)
+                 .ToListAsync<Actor>();
+            if (actors is null)
+            {
+                return NotFound();
+            }
+            return Ok(actors);
+        }
+
+
+        [HttpGet]
         [Route("All")]
-         public async Task<ActionResult<IEnumerable<Actor>>> Get()
-         {
+        public async Task<ActionResult<IEnumerable<Actor>>> GetAllActors()
+        {
             return await _context.Actors.ToListAsync<Actor>();
-         }
-        
+        }
+
+
+        [HttpGet]
+        [Route("{id:int}")]
+        public async Task<ActionResult<Actor>> GetActorById(int id)
+        {
+            var actor = await _context.Actors.FindAsync(id);
+            if (actor is null)
+            {
+                return NotFound();
+            }
+            return Ok(actor);
+        }
+
         [HttpPost]
         [Route("Add")]
         public async Task<IActionResult> AddNewActor([FromBody] ActorCreationDTO request)
         {
-            var newActore=new Actor(){Name=request.Name,Fortune=request.Fortune,DateOfBirth=request.DateOfBirth};
+            var newActore = new Actor() { Name = request.Name, Fortune = request.Fortune, DateOfBirth = request.DateOfBirth };
             await _context.Actors.AddAsync(newActore);
             await _context.SaveChangesAsync();
-            
-            return CreatedAtAction(nameof(GetActor), new {Id=newActore.Id},newActore);
+
+            return CreatedAtAction(nameof(GetActorById), new { Id = newActore.Id }, newActore);
         }
 
-        [HttpGet]
-        [Route("{id}")]
-        public ActionResult<Actor> GetActor(int id)
-         {
-            var actor = _context.Actors.Where<Actor>(ac=>ac.Id==id).FirstOrDefault();
-            if(actor == null)
-            {
-                return NotFound("This Actor is Not Found");
-            }
-            else
-            {
-                return Ok(actor);
-            }
-         }
+
     }
 }
