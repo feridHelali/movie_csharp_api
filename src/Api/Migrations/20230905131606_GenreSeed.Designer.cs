@@ -4,6 +4,7 @@ using Api.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Api.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230905131606_GenreSeed")]
+    partial class GenreSeed
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -45,22 +48,6 @@ namespace Api.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Actors");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 3,
-                            DateOfBirth = new DateTime(1944, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Fortune = 4585200m,
-                            Name = "Sauel JAKSON"
-                        },
-                        new
-                        {
-                            Id = 4,
-                            DateOfBirth = new DateTime(1971, 5, 4, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Fortune = 7985200m,
-                            Name = "Julia ROBERTS"
-                        });
                 });
 
             modelBuilder.Entity("Api.Entities.Comment", b =>
@@ -86,15 +73,6 @@ namespace Api.Migrations
                     b.HasIndex("MovieId");
 
                     b.ToTable("Comments");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 6,
-                            Content = "The suspense till the End",
-                            MovieId = 3,
-                            Recommend = true
-                        });
                 });
 
             modelBuilder.Entity("Api.Entities.Genre", b =>
@@ -149,22 +127,6 @@ namespace Api.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Movies");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 3,
-                            InTheater = false,
-                            ReleaseDate = new DateTime(2020, 12, 31, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Title = "The Evengers"
-                        },
-                        new
-                        {
-                            Id = 4,
-                            InTheater = false,
-                            ReleaseDate = new DateTime(2001, 8, 5, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Title = "Brave Hart"
-                        });
                 });
 
             modelBuilder.Entity("Api.Entities.MovieActor", b =>
@@ -187,15 +149,6 @@ namespace Api.Migrations
                     b.HasIndex("ActorId");
 
                     b.ToTable("MovieActors");
-
-                    b.HasData(
-                        new
-                        {
-                            MovieId = 4,
-                            ActorId = 3,
-                            Character = "The King",
-                            Order = 1
-                        });
                 });
 
             modelBuilder.Entity("GenreMovie", b =>
@@ -211,13 +164,6 @@ namespace Api.Migrations
                     b.HasIndex("MoviesId");
 
                     b.ToTable("GenreMovie");
-
-                    b.HasData(
-                        new
-                        {
-                            GenresIdentifier = 3,
-                            MoviesId = 3
-                        });
                 });
 
             modelBuilder.Entity("Api.Entities.Comment", b =>

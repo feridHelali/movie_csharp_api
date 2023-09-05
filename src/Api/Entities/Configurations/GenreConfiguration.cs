@@ -13,6 +13,9 @@ namespace Api.Entities.Configurations
         {
             builder.HasKey(g => g.Identifier);
             builder.Property(g => g.Name).HasMaxLength(150);
+            var futureFantasy = new Genre { Identifier = 8, Name = "Future Fantasy" };
+            var blackIrony = new Genre { Identifier = 9, Name = "Black Irony" };
+            builder.HasData(futureFantasy, blackIrony);
         }
     }
 }

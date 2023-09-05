@@ -2,6 +2,7 @@
 using System.Reflection;
 using Api.Entities;
 using Microsoft.EntityFrameworkCore;
+using Api.Entities.Seeding;
 
 namespace Api.Data
 {
@@ -16,6 +17,7 @@ namespace Api.Data
       {
         base.OnModelCreating(modelBuilder);
         modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
+        InitialSeeding.Seeding(modelBuilder);
       }
 
       public DbSet<Genre> Genres { get; set; } 

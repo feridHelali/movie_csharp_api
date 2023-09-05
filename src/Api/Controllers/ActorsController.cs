@@ -9,6 +9,7 @@ using Api.DTOs;
 using Api.Entities;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using Microsoft.EntityFrameworkCore;
 
 namespace Api.Controllers
 {
@@ -23,6 +24,13 @@ namespace Api.Controllers
             _logger = logger;
             _context =context;
         }
+
+        [HttpGet]
+        [Route("All")]
+         public async Task<ActionResult<IEnumerable<Actor>>> Get()
+         {
+            return await _context.Actors.ToListAsync<Actor>();
+         }
         
         [HttpPost]
         [Route("Add")]

@@ -37,7 +37,7 @@ namespace Api.Controllers
 
         [HttpGet]
         [Route("All")]
-        public async Task<ActionResult<List<Genre>>> GetAllGenres()
+        public async Task<ActionResult<IEnumerable<Genre>>> GetAllGenres()
         {
             var result = await _context.Genres.ToListAsync();
             return Ok(result);
