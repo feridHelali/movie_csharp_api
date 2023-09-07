@@ -68,7 +68,7 @@ namespace Api.Controllers
         [Route("{id:int}")]
         public async Task<ActionResult<Actor>> GetActorById(int id)
         {
-            var actor = await _context.Actors.FindAsync(id);
+            var actor = await _context.Actors.FirstOrDefaultAsync(ac=>ac.Id==id);
             if (actor is null)
             {
                 return NotFound();

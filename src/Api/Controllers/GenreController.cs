@@ -19,7 +19,7 @@ namespace Api.Controllers
         private readonly ILogger<GenreController> _logger;
         private readonly ApplicationDbContext _context;
 
-        public GenreController(ILogger<GenreController> logger,ApplicationDbContext context)
+        public GenreController(ILogger<GenreController> logger, ApplicationDbContext context)
         {
             _logger = logger;
             _context = context;
@@ -29,7 +29,7 @@ namespace Api.Controllers
         [Route("Add")]
         public async Task<IActionResult> AddNewGenre([FromBody] GenreCreationDTO request)
         {
-            var genre = new Genre(){Name=request.Name};
+            var genre = new Genre() { Name = request.Name };
             await _context.Set<Genre>().AddAsync(genre);
             await _context.SaveChangesAsync();
             return Ok(genre);
@@ -43,6 +43,34 @@ namespace Api.Controllers
             return Ok(result);
         }
 
-       
+
+        /// <summary>
+        /// Use Connected Model to update entity/table
+        /// </summary>
+        /// <param name="name"></param>
+        /// <returns></returns>
+        [HttpPut]
+        [Route("{id:int}")]
+        public async Task<ActionResult> UpateConnectedModel(int id,string name)
+        {
+            var genre=await _context.Genres.FirstOrDefaultAsync(g=>g.Identifier==id);
+            if(genre is null)
+            {
+                return NotFound();
+            }
+            genre.Name=name;
+            await _context.SaveChangesAsync();
+            return Ok();
+        }
+
+        [HttpPut]
+        [Route("{id:int}/name")]
+        public async Task<ActionResult> UpateDisconnectedModel(int id,string name)
+        {
+            var genre=new Genre{Identifier=id,Name=name};
+            _context.Update(genre);
+            await _context.SaveChangesAsync();
+            return Ok();
+        }
     }
 }
